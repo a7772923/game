@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動圖片抽獎</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .image-display {
+            width: 300px;
+            height: 300px;
+            margin-bottom: 20px;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .btn-random { background-color: #4CAF50; color: white; }
+        .btn-random:hover { background-color: #45a049; }
+        .btn-reset { background-color: #f44336; color: white; }
+        .btn-reset:hover { background-color: #da190b; }
+        .status { margin-top: 10px; color: #666; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="image-display" id="imageBox">
+        <p id="placeholderText">準備好了嗎？</p>
+        <img id="displayImg" src="" style="display:none;">
+    </div>
+
+    <div>
+        <button class="btn-random" onclick="showRandomImage()">隨機跳出圖片</button>
+        <button class="btn-reset" onclick="resetGallery()">歸零重置</button>
+    </div>
+
+    <div class="status" id="statusMessage">剩餘圖片：10 張</div>
+</div>
+
+<script>
+    // 這裡模擬你的資料庫圖片網址
+    const database = [
+        "https://github.com/a7772923/0426/blob/main/10-1_0.jpg?raw=true",
+        "https://github.com/a7772923/0426/blob/main/1-1_0.png?raw=true",
+        "https://github.com/a7772923/0426/blob/main/12-1_0.png?raw=true",
+        "https://github.com/a7772923/0426/blob/main/2-1_0.png?raw=true",
+        "https://github.com/a7772923/0426/blob/main/3-1_0.jpg?raw=true",
+        "https://github.com/a7772923/0426/blob/main/4-1_0.jpg?raw=true",
+        "https://github.com/a7772923/0426/blob/main/5-1_0.jpg?raw=true",
+        "https://github.com/a7772923/0426/blob/main/6-1_0.jpg?raw=true",
+        "https://github.com/a7772923/0426/blob/main/7-1_0.jpg?raw=true",
+        "https://github.com/a7772923/0426/blob/main/8-1_0.jpg?raw=true",
+        "https://github.com/a7772923/0426/blob/main/9-1_0.jpg?raw=true"
+    ];
+
+    // 複製一份資料出來操作，避免動到原始資料
+    let availableImages = [...database];
+
+    const imgElement = document.getElementById('displayImg');
+    const placeholder = document.getElementById('placeholderText');
+    const statusText = document.getElementById('statusMessage');
+
+    // 更新狀態文字
+    function updateStatus() {
+        statusText.innerText = `剩餘圖片：${availableImages.length} 張`;
+    }
+
+    // 第一個按鈕：隨機跳出不重複圖片
+    function showRandomImage() {
+        if (availableImages.length === 0) {
+            alert("所有圖片都已經顯示過了！請點選歸零重新開始。");
+            return;
+        }
+
+        // 隨機選取一個索引
+        const randomIndex = Math.floor(Math.random() * availableImages.length);
+        
+        // 取得該圖片網址，並從陣列中移除 (splice 會回傳被移除的元素)
+        const selectedImgUrl = availableImages.splice(randomIndex, 1)[0];
+
+        // 顯示圖片
+        imgElement.src = selectedImgUrl;
+        imgElement.style.display = 'block';
+        placeholder.style.display = 'none';
+
+        updateStatus();
+    }
+
+    // 第二個按鈕：歸零
+    function resetGallery() {
+        // 重置剩餘圖片陣列
+        availableImages = [...database];
+        
+        // 隱藏圖片，顯示預設文字
+        imgElement.src = "";
+        imgElement.style.display = 'none';
+        placeholder.style.display = 'block';
+        placeholder.innerText = "已重置，準備開始";
+
+        updateStatus();
+    }
+
+    // 初始化狀態顯示
+    updateStatus();
+</script>
+
+</body>
+</html>
